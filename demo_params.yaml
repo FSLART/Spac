@@ -12,4 +12,8 @@
           history: keep_last
           reliability: reliable
     use_sim_time: false
+    pid_controller: 
+      kp: 0.0
+      ki: 0.0
+      kd: 0.0
 
