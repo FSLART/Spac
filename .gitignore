@@ -10,3 +10,4 @@ server-*.log
 #editor 
 *.vscode
 *.code-workspace
+documentation
