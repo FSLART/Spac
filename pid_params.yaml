@@ -1,10 +1,9 @@
 /DriveModelNode:
   ros__parameters:
-    frequency: 10
+    frequency: 300
     wp_topic: "/waypoints/current"
     odom_topic: "/odom/filtered"
     ackermann_topic: "/control/drive"
-    track_width: 3.0
     qos_overrides:
       /parameter_events:
         publisher:
@@ -17,4 +16,3 @@
       kp: 0.0
       ki: 0.0
       kd: 0.0
-

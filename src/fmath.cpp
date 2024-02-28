@@ -8,13 +8,16 @@
 
 #include "fmath.h"
 #include "utils.h"
+#include "pid_params.h"
 
 /**
 * @brief Public Constructor for the PID_Controller class
 */
-PID_Controller::PID_Controller(fs_PidFloat_t Kp, fs_PidFloat_t Ki, fs_PidFloat_t Kd): PID_Controller(){
-	s_Tunings(Kp, Ki, Kd); 
+PID_Controller::PID_Controller(const PIDParameters& params) : PID_Controller(), parameters(params) {
+    // Configura os parâmetros usando a classe PIDParameters
+    s_Tunings(params.getKp(), params.getKi(), params.getKd());
 }
+
 /**
 * @brief Constructor meant to setup everything to 0 It should not be used directly, and its only public so that it can be used in the other constructor
 */
@@ -55,12 +58,16 @@ fs_PidFloat_t PID_Controller::computeWithRateChange(fs_PidFloat_t setpoint, fs_P
 /**
 * @brief Setter for the PID Tunings/Constants
 */
-int PID_Controller::s_Tunings(fs_PidFloat_t Kp, fs_PidFloat_t Ki, fs_PidFloat_t Kd){
-	kp=Kp;
-	ki=Ki;
-	kd=Kd;
-	return 0;
+// Atualiza os coeficientes da PIDParameters usando o método updateCoefficients
+void PID_Controller::s_Tunings(fs_PidFloat_t Kp, fs_PidFloat_t Ki, fs_PidFloat_t Kd) {
+    parameters.updateCoefficients(Kp, Ki, Kd);
+
+    // Configura os parâmetros da própria classe
+    kp = Kp;
+    ki = Ki;
+    kd = Kd;
 }
+
 fs_PidFloat_t PID_Controller::g_Proportion(){
 	return kp;
 }
