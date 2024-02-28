@@ -1,20 +1,36 @@
+/** ==========================================
+* @title: FMath Header File
+* @description: Contains generic math functions and classes
+* @author: João Vieira
+* @brief Last Updated:   2023-07-31
+========================================== **/
+
 #ifndef FMATH_H_
 #define FMATH_H_
 #include <cstdint>
+#include "utils.h"
+#include <cmath>
 
-
-#ifdef __FSIPLEIRIA_PID_DOUBLE_PRECISION__
-	typedef int64_t fs_PidFloat_t;
+//#include <stdfloat>
+// TODO update compiler so we can use fixed width types. 
+#ifdef __LART_PID_DOUBLE_PRECISION__
+	typedef long double fs_PidFloat_t;
 #else
-	typedef int32_t fs_PidFloat_t;
+	typedef long double  fs_PidFloat_t;
 #endif
 
+/**
+* @class PID_Controller
+* @brief Provides a discrete implementation of the PID Control Algorithm
+**/
 class PID_Controller{
 	public:
-		PID_Controller(fs_PidFloat_t Kp, fs_PidFloat_t Ki, fs_PidFloat_t Kd);
-		
+		 PID_Controller(const PIDParameters& params);
+        ~PID_Controller();
+        
+		fs_PidFloat_t computeWithRateChange(fs_PidFloat_t setpoint, fs_PidFloat_t input, fs_PidFloat_t *output);
 		fs_PidFloat_t compute(fs_PidFloat_t setpoint, fs_PidFloat_t input);
-		int s_Tunings(fs_PidFloat_t Kp, fs_PidFloat_t Ki, fs_PidFloat_t Kd);
+		void s_Tunings(fs_PidFloat_t Kp, fs_PidFloat_t Ki, fs_PidFloat_t Kd);
 		fs_PidFloat_t g_Proportion();
 		fs_PidFloat_t g_Integral();
 		fs_PidFloat_t g_Derivative();
@@ -22,7 +38,29 @@ class PID_Controller{
 	protected:
 		PID_Controller();
 		fs_PidFloat_t kp, ki, kd;
-		fs_PidFloat_t error, error_prev, error_sum;
+		//error_prevtwo, calls
+		fs_PidFloat_t output_past, error, error_prev, error_sum;
+    
+    private:
+        // Adicione um membro para armazenar o objeto PIDParameters
+        PIDParameters parameters;
+};
 	
+};
+#ifdef __LART_KINEMATICS_DOUBLE_PRECISION__
+	typedef long double fs_KinematicsFloat_t;
+#else
+	typedef long double fs_KinematicsFloat_t;
+#endif
+
+/**
+* @class PID_Controller
+* @brief Provides a discrete implementation of the PID Control Algorithm
+**/
+class Inverse_Kinematics{
+	public:
+		
+		Inverse_Kinematics();
+		fs_KinematicsFloat_t track_ComputeSteeringAngle(fs_KinematicsFloat_t track_angle, fs_KinematicsFloat_t track_radius);
 };
 #endif // FMATH_H_
