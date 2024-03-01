@@ -80,11 +80,11 @@ void TargetWaypoint::instance_CarrotControl(){
 			fs_KinematicsFloat_t distance = std::sqrt(std::pow(m_CurrentTargetWaypoint.x - m_CurrentOdometry.pose.pose.position.x,2) + std::pow(m_CurrentTargetWaypoint.y - m_CurrentOdometry.pose.pose.position.y,2));
 		#endif
 		auto speed = fly_Throught(__distance, theta_track);
+		
+		//TODO IS THE  VARIABLE "SPEED" AUTOMATICALY UPDATED OR IT NEEDS TO BE EQUAL TO THE RETURN OF THE FUNCTION???!
 		m_pid_controller->compute(speed, m_CurrentOdometry.twist.twist.linear.x);
 		speed = std::clamp(speed, (fs_PidFloat_t)-TERMINAL_SPEED,(fs_PidFloat_t) TERMINAL_SPEED);
 		
-
-
 		m_DispatcherMailBox = ackermann_msgs::msg::AckermannDrive();
 		m_DispatcherMailBox.speed = speed;
 		m_DispatcherMailBox.steering_angle = imperative_angle;
