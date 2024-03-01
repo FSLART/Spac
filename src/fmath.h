@@ -54,6 +54,6 @@ class Inverse_Kinematics{
 	public:
 		
 		Inverse_Kinematics();
-		fs_KinematicsFloat_t track_ComputeSteeringAngle(fs_KinematicsFloat_t track_angle, fs_KinematicsFloat_t track_radius);
+		fs_KinematicsFloat_t track_ComputeSteeringAngle(fs_KinematicsFloat_t track_angle, fs_KinematicsFloat_t look_ahead);
 };
 #endif // FMATH_H_

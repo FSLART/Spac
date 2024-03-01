@@ -75,11 +75,9 @@ fs_PidFloat_t PID_Controller::g_Derivative(){
 Inverse_Kinematics::Inverse_Kinematics(){
 	
 }
-fs_KinematicsFloat_t Inverse_Kinematics::track_ComputeSteeringAngle(fs_KinematicsFloat_t track_angle, fs_KinematicsFloat_t track_width ){
-	fs_KinematicsFloat_t turning_radius = WHEELBASE / std::tan(track_angle);
-	fs_KinematicsFloat_t inner_angle = std::atan(WHEELBASE / (turning_radius - (track_width / 2)));
-    fs_KinematicsFloat_t outer_angle = std::atan(WHEELBASE / (turning_radius + (track_width / 2)));
-	fs_KinematicsFloat_t steering_angle=(inner_angle+outer_angle)/2;
+fs_KinematicsFloat_t Inverse_Kinematics::track_ComputeSteeringAngle(fs_KinematicsFloat_t track_angle, fs_KinematicsFloat_t look_ahead ){
+
+	fs_KinematicsFloat_t steering_angle = std::atan2(2.0 * WHEELBASE * std::sin(track_angle), look_ahead);
 
 	return steering_angle;
 }

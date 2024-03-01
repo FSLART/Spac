@@ -61,9 +61,18 @@ void TargetWaypoint::instance_CarrotControl(){
 	//RCLCPP_DEBUG(rclcpp::get_logger("rclcpp"), "TargetWaypoint::instance_CarrotControl() called");
 	//return;c
 	try{
-
+		
 		auto theta_track = predict_trackAngle(); 
-		auto theta_steer = m_Inverse_Kinematics.track_ComputeSteeringAngle(theta_track, m_trackWidth);
+		
+		#ifdef __LART_2D_ONLY__
+			fs_KinematicsFloat_t __distance = std::sqrt(std::pow(m_CurrentTargetWaypoint.x - m_CurrentOdometry.pose.pose.position.x,2) + std::pow(m_CurrentTargetWaypoint.y - m_CurrentOdometry.pose.pose.position.y,2));
+		
+		#else
+			//TODO bellow was copy pasted
+			fs_KinematicsFloat_t __distance = std::sqrt(std::pow(m_CurrentTargetWaypoint.x - m_CurrentOdometry.pose.pose.position.x,2) + std::pow(m_CurrentTargetWaypoint.y - m_CurrentOdometry.pose.pose.position.y,2));
+		#endif
+		
+		auto theta_steer = m_Inverse_Kinematics.track_ComputeSteeringAngle(theta_track, __distance);
 		auto theta_current = current_Angle(); 
 		//angle that is supposed to be applied to the abstract "steering wheel"
 		auto imperative_angle = m_pid_controller_angular->compute(theta_steer, theta_current);
@@ -71,14 +80,6 @@ void TargetWaypoint::instance_CarrotControl(){
 		imperative_angle = std::clamp(imperative_angle, (fs_PidFloat_t)-MAX_STEERING,(fs_PidFloat_t) MAX_STEERING);
 		
 		
-		
-		#ifdef __LART_2D_ONLY__
-			fs_KinematicsFloat_t __distance = std::sqrt(std::pow(m_CurrentTargetWaypoint.x - m_CurrentOdometry.pose.pose.position.x,2) + std::pow(m_CurrentTargetWaypoint.y - m_CurrentOdometry.pose.pose.position.y,2));
-		
-		#else
-			//TODO bellow was copy pasted
-			fs_KinematicsFloat_t distance = std::sqrt(std::pow(m_CurrentTargetWaypoint.x - m_CurrentOdometry.pose.pose.position.x,2) + std::pow(m_CurrentTargetWaypoint.y - m_CurrentOdometry.pose.pose.position.y,2));
-		#endif
 		auto speed = fly_Throught(__distance, theta_track);
 		
 		//TODO IS THE  VARIABLE "SPEED" AUTOMATICALY UPDATED OR IT NEEDS TO BE EQUAL TO THE RETURN OF THE FUNCTION???!
